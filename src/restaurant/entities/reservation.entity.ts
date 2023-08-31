@@ -1,6 +1,6 @@
 export class Reservation {
     id: number;
-    table: number;
+    tableNumber: number;
     date: string;
     peopleNumber: number;
 }
