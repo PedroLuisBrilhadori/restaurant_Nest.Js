@@ -1,6 +1,6 @@
 export class Order {
     id: number;
-    dishList: [];
-    status: string;
+    dishList: {dish: number; quantity: number} [];
     date: string;
+    status?: string;
 }

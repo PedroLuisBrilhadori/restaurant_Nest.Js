@@ -6,11 +6,12 @@ import { Table } from './entities/table.entity';
 
 @Injectable()
 export class RestaurantService {
+    
     private orderList: Order[] = [];
 
     private reservations: Reservation[] = [];
 
-    private listTables: Table[] = [
+    private allTables: Table[] = [
         {
             id: 1,
             max: 2,
@@ -76,6 +77,7 @@ export class RestaurantService {
         },
     ];
     
+    // Funções de listagem [
     listMenu() {
         return this.menu;
     }
@@ -84,27 +86,47 @@ export class RestaurantService {
         return this.orderList;
     }
 
-    listOfTables() {
-        return this.listTables;
+    listTables() {
+        return this.allTables;
     }
 
     listReservations() {
         return this.reservations;
     }
-    
+    // ]
 
     makeOrder(updateOrder: any) {
+        this.orderList.find(test => test.id === updateOrder.id);
+        
+        updateOrder.status = 'Pending';
         this.orderList.push(updateOrder);
-
-        // return updateOrder;
+    
         throw new HttpException(
-            `Order updated!`,
+            `Order registered!`,
             HttpStatus.ACCEPTED,
         );
     }
 
+    updateOrderStatus(id: number, status: string) {
+        const order = this.orderList.find(order => order.id === id);
+
+        if (!order) {
+            throw new HttpException(
+                `Order not found!`,
+                HttpStatus.NOT_FOUND,
+            );
+        } else {
+            order.status = status;
+
+            throw new HttpException(
+                `Status updated!`,
+                HttpStatus.ACCEPTED,
+            );
+        }
+    }
+
     reserveTable(makeReservation: Reservation) {
-        const table = this.listTables.find(test => test.id === makeReservation.tableNumber);
+        const table = this.allTables.find(test => test.id === makeReservation.tableNumber);
       
         if (!table) {
           throw new HttpException(

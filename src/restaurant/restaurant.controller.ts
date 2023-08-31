@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { Order } from './entities/order.entity';
 import { Reservation } from './entities/reservation.entity';
@@ -19,12 +19,17 @@ export class RestaurantController {
 
     @Get('listTables')
     listTables() {
-        return this.restaurantService.listOfTables();
+        return this.restaurantService.listTables();
     }
 
     @Get('listReservations')
     listReservations() {
         return this.restaurantService.listReservations();
+    }
+    
+    @Patch('update')
+    updateOrderStatus(id: number, status: string) {
+        return this.restaurantService.updateOrderStatus(id, status);
     }
 
     @Post('makeOrder')
