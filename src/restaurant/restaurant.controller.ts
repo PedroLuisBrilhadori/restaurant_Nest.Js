@@ -28,17 +28,22 @@ export class RestaurantController {
     }
     
     @Patch('update')
-    updateOrderStatus(id: number, status: string) {
-        return this.restaurantService.updateOrderStatus(id, status);
+    updateOrderStatus(@Body() updateStatus: Order) {
+        return this.restaurantService.updateOrderStatus(updateStatus);
+    }
+
+    @Post('verify')
+    verifyStatus(@Body() idVerify) {
+        return this.restaurantService.verifyStatus(idVerify);
     }
 
     @Post('makeOrder')
-    makeOrder(@Body() updateOrder: Order) {
-        return this.restaurantService.makeOrder(updateOrder);
+    makeOrder(@Body() updateOrdersList: Order) {
+        return this.restaurantService.makeOrder(updateOrdersList);
     }
 
     @Post('reserveTable')
     reserveTable(@Body() makeReservation: Reservation) {
-        return this.restaurantService.reserveTable(makeReservation);
+        return this.restaurantService.makeReservation(makeReservation);
     }
 }

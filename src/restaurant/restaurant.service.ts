@@ -3,9 +3,11 @@ import { Dish } from './entities/dish.entity';
 import { Order } from './entities/order.entity';
 import { Reservation } from './entities/reservation.entity';
 import { Table } from './entities/table.entity';
+import { Review } from './entities/review.entity';
 
 @Injectable()
 export class RestaurantService {
+    private dishReviews: Review[] = [];
     
     private orderList: Order[] = [];
 
@@ -93,21 +95,15 @@ export class RestaurantService {
     listReservations() {
         return this.reservations;
     }
-    // ]
 
-    makeOrder(updateOrder: any) {
-        this.orderList.find(test => test.id === updateOrder.id);
-        
-        updateOrder.status = 'Pending';
-        this.orderList.push(updateOrder);
-    
-        throw new HttpException(
-            `Order registered!`,
-            HttpStatus.ACCEPTED,
-        );
+    listReviews() {
+        return this.dishReviews;
     }
+    // ]
+    
 
-    updateOrderStatus(id: number, status: string) {
+    verifyStatus(idVerify) {
+        const {id} = idVerify
         const order = this.orderList.find(order => order.id === id);
 
         if (!order) {
@@ -116,23 +112,40 @@ export class RestaurantService {
                 HttpStatus.NOT_FOUND,
             );
         } else {
-            order.status = status;
-
+            const data = order.status;
             throw new HttpException(
-                `Status updated!`,
+                `Order status is ${data}!`,
                 HttpStatus.ACCEPTED,
             );
         }
     }
 
-    reserveTable(makeReservation: Reservation) {
+    makeReview() {
+        
+    }
+
+    makeOrder(updateOrdersList: any) {
+        this.orderList.find(test => test.id === updateOrdersList.id);
+        
+        updateOrdersList.status = 'Pending';
+        this.orderList.push(updateOrdersList);
+    
+        throw new HttpException(
+            `Order registered!`,
+            HttpStatus.ACCEPTED,
+        );
+    }
+
+    
+
+    makeReservation(makeReservation: Reservation) {
         const table = this.allTables.find(test => test.id === makeReservation.tableNumber);
       
         if (!table) {
-          throw new HttpException(
-            `Table not found!`,
-            HttpStatus.NOT_FOUND,
-          );
+            throw new HttpException(
+                `Table not found!`,
+                HttpStatus.NOT_FOUND,
+            );
         } else {
           if (table.status === 'Available') {
             if (makeReservation.peopleNumber <= table.max) {
@@ -150,12 +163,31 @@ export class RestaurantService {
                 );
             }
           } else {
-            throw new HttpException(
-              `Table not available!`,
-              HttpStatus.METHOD_NOT_ALLOWED,
-            );
-          }
+                throw new HttpException(
+                `Table not available!`,
+                HttpStatus.METHOD_NOT_ALLOWED,
+                );
+            }
         }
-      }
+    }
+
+      updateOrderStatus(updateStatus) {
+        const {id, status} = updateStatus;
+        const order = this.orderList.find(order => order.id === id);
+
+        if (!order) {
+            throw new HttpException(
+                `Order not found!`,
+                HttpStatus.NOT_FOUND,
+            );
+        } else {
+            order.status = status;
+
+            throw new HttpException(
+                `Status updated to ${order.status}!`,
+                HttpStatus.ACCEPTED,
+            );
+        }
+    }
 
 }
